@@ -1123,3 +1123,51 @@ footer {
     transform: none;
   }
 }
+
+/* Premium GPU-Accelerated Shimmer Animations */
+@keyframes shimmerSweep {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.shimmer-bg {
+  background: linear-gradient(90deg, #12110F 25%, #1F1C16 50%, #12110F 75%);
+  background-size: 200% 100%;
+  animation: shimmerSweep 1.6s infinite linear;
+}
+
+.shimmer-gold {
+  background: linear-gradient(90deg, #614613 25%, #8A6422 50%, #614613 75%);
+  background-size: 200% 100%;
+  animation: shimmerSweep 1.6s infinite linear;
+}
+
+/* Top Loading Progress Bar */
+.top-loading-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 3px;
+  background: linear-gradient(90deg, #D9B85C, #F8EAB8, #D9B85C, #9A7026);
+  background-size: 200% 100%;
+  animation: shimmerSweep 1.5s infinite linear;
+  z-index: 9999;
+  transition: width 0.4s ease-out, opacity 0.4s ease-in-out;
+  pointer-events: none;
+}
+
+/* Smooth Drawer Custom Styles */
+.mobile-menu-drawer {
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform;
+}
+
+.backdrop-blur-nav {
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px); /* Webkit support for iOS Safari */
+}
+

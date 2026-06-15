@@ -2,6 +2,7 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Header from './components/Header';
 import Footer from './components/Footer';
+import TopProgressBar from './components/TopProgressBar';
 import Home from './pages/Home';
 import Shop from './pages/Shop';
 import ProductDetails from './pages/ProductDetails';
@@ -24,6 +25,7 @@ import About from './pages/About';
 const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   return (
     <div className="min-h-screen flex flex-col justify-between bg-noir text-cream">
+      <TopProgressBar />
       <Header />
       <main className="flex-grow">
         {children}
@@ -32,6 +34,7 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     </div>
   );
 };
+
 
 export const App: React.FC = () => {
   return (

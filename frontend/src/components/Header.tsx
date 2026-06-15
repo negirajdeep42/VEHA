@@ -28,6 +28,27 @@ export const Header: React.FC = () => {
     return () => clearInterval(interval);
   }, []);
 
+  // Lock scroll on iOS/Mobile when mobile menu is open to prevent double scroll bouncing
+  useEffect(() => {
+    if (mobileMenuOpen) {
+      document.body.style.overflow = 'hidden';
+      document.body.style.position = 'fixed';
+      document.body.style.width = '100%';
+      document.body.style.height = '100%';
+    } else {
+      document.body.style.overflow = '';
+      document.body.style.position = '';
+      document.body.style.width = '';
+      document.body.style.height = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+      document.body.style.position = '';
+      document.body.style.width = '';
+      document.body.style.height = '';
+    };
+  }, [mobileMenuOpen]);
+
   return (
     <>
       {/* SVGs definitions */}
@@ -55,7 +76,7 @@ export const Header: React.FC = () => {
       </div>
 
       {/* Header */}
-      <header>
+      <header className="sticky top-0 z-50 backdrop-blur-nav">
         <div className="wrap nav">
           <Link className="brand" to="/" aria-label="Veha Jewelry home">
             <svg className="crown" viewBox="0 0 100 56" aria-hidden="true">
@@ -67,32 +88,19 @@ export const Header: React.FC = () => {
             <span className="sub">Jewelry</span>
           </Link>
 
-          <nav>
-            <ul className={`menu ${mobileMenuOpen ? '!flex flex-col absolute top-[128px] left-0 w-full bg-noir border-b border-line p-6 gap-4 z-40' : ''}`}>
-              <li><Link to="/shop" onClick={() => setMobileMenuOpen(false)}>Shop</Link></li>
-              <li><Link to="/shop?sort=bestseller" onClick={() => setMobileMenuOpen(false)}>Bestsellers</Link></li>
-              <li><Link to="/categories" onClick={() => setMobileMenuOpen(false)}>Collections</Link></li>
-              <li><Link to="/about" onClick={() => setMobileMenuOpen(false)}>The House</Link></li>
-              <li><Link to="/contact" onClick={() => setMobileMenuOpen(false)}>Contact</Link></li>
-              {mobileMenuOpen && user && (
-                <li>
-                  <button 
-                    onClick={() => {
-                      dispatch(logoutUser());
-                      setMobileMenuOpen(false);
-                      navigate('/');
-                    }}
-                    className="text-left text-xs uppercase tracking-widest text-gold-d"
-                  >
-                    Logout ({user.name})
-                  </button>
-                </li>
-              )}
+          {/* Desktop Navigation */}
+          <nav className="hidden md:block">
+            <ul className="menu">
+              <li><Link to="/shop">Shop</Link></li>
+              <li><Link to="/shop?sort=bestseller">Bestsellers</Link></li>
+              <li><Link to="/categories">Collections</Link></li>
+              <li><Link to="/about">The House</Link></li>
+              <li><Link to="/contact">Contact</Link></li>
             </ul>
           </nav>
 
           <div className="icons">
-            <Link to="/track-order" aria-label="Search" className="lg">
+            <Link to="/track-order" aria-label="Search" className="hidden sm:flex">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
                 <circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/>
               </svg>
@@ -110,26 +118,96 @@ export const Header: React.FC = () => {
                 <span className="cart-count !bg-gold-d !text-noir">{wishlistItems.length}</span>
               )}
             </Link>
-            <Link to="/cart" className="cart-ic" aria-label="Cart">
+            <Link to="/cart" className="cart-ic relative" aria-label="Cart">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
                 <path d="M6 8h12l-1.2 11.2A2 2 0 0 1 14.8 21H9.2A2 2 0 0 1 7.2 19.2L6 8Z"/>
                 <path d="M9 8V6.5a3 3 0 0 1 6 0V8"/>
               </svg>
               <span className="cart-count" id="cartCount">{cartSummary.count}</span>
             </Link>
+
+            {/* Mobile Hamburger Button with CSS Line Animation */}
             <button 
-              className="burger" 
+              className="burger md:hidden flex flex-col justify-between w-6 h-[15px] relative focus:outline-none z-50 cursor-pointer" 
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              aria-label="Menu"
+              aria-label="Toggle Menu"
             >
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-                <path d="M4 7h16M4 12h16M4 17h16"/>
-              </svg>
+              <span className={`w-full h-[1.5px] bg-cream transition-all duration-300 origin-center ${mobileMenuOpen ? 'rotate-45 translate-y-[6.75px] bg-gold' : ''}`} />
+              <span className={`w-full h-[1.5px] bg-cream transition-all duration-300 ${mobileMenuOpen ? 'opacity-0' : ''}`} />
+              <span className={`w-full h-[1.5px] bg-cream transition-all duration-300 origin-center ${mobileMenuOpen ? '-rotate-45 -translate-y-[6.75px] bg-gold' : ''}`} />
             </button>
           </div>
         </div>
       </header>
+
+      {/* Mobile Menu Drawer Overlay */}
+      {/* Backdrop (Blur & Dim overlay) */}
+      <div 
+        className={`fixed inset-0 bg-black/70 backdrop-blur-sm transition-opacity duration-300 z-40 ${mobileMenuOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'}`} 
+        onClick={() => setMobileMenuOpen(false)}
+      />
+
+      {/* Slide-out Drawer Panel */}
+      <div 
+        className={`fixed top-0 right-0 h-full w-[295px] max-w-[85vw] bg-noir-2 border-l border-line p-8 flex flex-col justify-between z-45 transform transition-transform duration-300 ease-out mobile-menu-drawer ${mobileMenuOpen ? 'translate-x-0' : 'translate-x-full'}`}
+      >
+        <div className="flex flex-col">
+          {/* Header of Drawer */}
+          <div className="flex justify-between items-center pb-6 border-b border-line mb-8">
+            <span className="eyebrow !text-gold">Navigation</span>
+            <button 
+              className="text-cream hover:text-gold transition-colors p-1" 
+              onClick={() => setMobileMenuOpen(false)}
+              aria-label="Close menu"
+            >
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="w-5 h-5">
+                <path d="M18 6 6 18M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
+
+          {/* Links list */}
+          <nav className="flex flex-col gap-6">
+            <Link to="/shop" onClick={() => setMobileMenuOpen(false)} className="text-[14px] tracking-[0.18em] uppercase hover:text-gold transition-colors">Shop</Link>
+            <Link to="/shop?sort=bestseller" onClick={() => setMobileMenuOpen(false)} className="text-[14px] tracking-[0.18em] uppercase hover:text-gold transition-colors">Bestsellers</Link>
+            <Link to="/categories" onClick={() => setMobileMenuOpen(false)} className="text-[14px] tracking-[0.18em] uppercase hover:text-gold transition-colors">Collections</Link>
+            <Link to="/about" onClick={() => setMobileMenuOpen(false)} className="text-[14px] tracking-[0.18em] uppercase hover:text-gold transition-colors">The House</Link>
+            <Link to="/contact" onClick={() => setMobileMenuOpen(false)} className="text-[14px] tracking-[0.18em] uppercase hover:text-gold transition-colors">Contact</Link>
+            <Link to="/track-order" onClick={() => setMobileMenuOpen(false)} className="text-[14px] tracking-[0.18em] uppercase hover:text-gold transition-colors sm:hidden">Track Order</Link>
+          </nav>
+        </div>
+
+        {/* Footer of Drawer */}
+        <div className="flex flex-col gap-4 border-t border-line pt-6">
+          {user ? (
+            <div className="space-y-4">
+              <div className="text-[11px] uppercase tracking-wider text-cream-soft">
+                Signed in as <span className="text-gold font-normal block mt-1">{user.name}</span>
+              </div>
+              <div className="flex justify-between items-center">
+                <Link to="/profile" onClick={() => setMobileMenuOpen(false)} className="text-[11px] uppercase tracking-wider text-cream hover:text-gold transition-colors">My Profile</Link>
+                <button 
+                  onClick={() => {
+                    dispatch(logoutUser());
+                    setMobileMenuOpen(false);
+                    navigate('/');
+                  }}
+                  className="text-[11px] uppercase tracking-wider text-err hover:opacity-80 transition-opacity"
+                >
+                  Logout
+                </button>
+              </div>
+            </div>
+          ) : (
+            <div className="flex flex-col gap-3">
+              <Link to="/login" onClick={() => setMobileMenuOpen(false)} className="btn line !py-3 !text-[10px] text-center w-full justify-center">Login</Link>
+              <Link to="/register" onClick={() => setMobileMenuOpen(false)} className="btn solid !py-3 !text-[10px] text-center w-full justify-center">Register</Link>
+            </div>
+          )}
+        </div>
+      </div>
     </>
   );
 };
 export default Header;
+
