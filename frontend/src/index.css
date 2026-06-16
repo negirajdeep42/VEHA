@@ -186,11 +186,16 @@ header {
   border-bottom: 1px solid var(--line);
 }
 
-.nav {
+.wrap.nav {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  height: 88px;
+}
+
+nav {
+  flex: 1;
+  display: flex;
+  justify-content: center;
 }
 
 .brand {
@@ -227,7 +232,8 @@ header {
 
 .menu {
   display: flex;
-  gap: 36px;
+  gap: 40px;
+  align-items: center;
   list-style: none;
 }
 
@@ -263,8 +269,8 @@ header {
 
 .icons {
   display: flex;
-  gap: 22px;
   align-items: center;
+  gap: 20px;
 }
 
 .icons button, .icons a {
@@ -305,7 +311,6 @@ header {
 }
 
 .burger {
-  display: none;
   background: none;
   border: none;
   cursor: pointer;
@@ -497,7 +502,7 @@ header {
 
 .card:hover {
   transform: translateY(-7px);
-  border-color: var(--line-2);
+  border-color: var(--gold);
   box-shadow: 0 30px 60px -34px rgba(217, 184, 92, 0.4);
 }
 
@@ -515,7 +520,11 @@ header {
   width: 100%;
   height: 100%;
   display: block;
-  transition: 0.55s ease;
+  transition: transform 0.65s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.card:hover .ph .render {
+  transform: scale(1.08);
 }
 
 .badge {
@@ -547,12 +556,23 @@ header {
   align-items: center;
   justify-content: center;
   color: var(--cream-soft);
-  transition: 0.3s;
+  transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), color 0.3s, background-color 0.3s, border-color 0.3s;
 }
 
-.heart:hover, .heart.on {
+.heart:hover {
   color: var(--gold);
-  border-color: var(--line-2);
+  border-color: var(--gold);
+  transform: scale(1.15);
+  background: rgba(11, 11, 12, 0.8);
+}
+
+.heart:active {
+  transform: scale(0.9);
+}
+
+.heart.on {
+  color: var(--gold);
+  border-color: var(--gold);
 }
 
 .heart svg {
@@ -1086,9 +1106,6 @@ footer {
   .menu, .icons .lg {
     display: none;
   }
-  .burger {
-    display: flex;
-  }
   .cats {
     grid-template-columns: repeat(2, 1fr);
   }
@@ -1162,12 +1179,132 @@ footer {
 
 /* Smooth Drawer Custom Styles */
 .mobile-menu-drawer {
-  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  position: fixed;
+  top: 0;
+  right: 0;
+  height: 100%;
+  width: 320px;
+  max-width: 80vw;
+  background-color: var(--noir-2);
+  border-left: 1px solid var(--line);
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  z-index: 100;
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease, visibility 0.3s ease;
   will-change: transform;
+}
+
+.mobile-menu-backdrop {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  z-index: 90;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
 }
 
 .backdrop-blur-nav {
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px); /* Webkit support for iOS Safari */
+}
+
+/* Gold Hover Underline and Active State Animations */
+.nav-link {
+  font-size: 11.5px;
+  font-weight: 400;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--cream);
+  position: relative;
+  padding: 4px 0;
+  transition: color 0.3s ease;
+}
+
+.nav-link::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 0;
+  height: 1px;
+  background: var(--gold);
+  transition: width 0.3s ease;
+}
+
+.nav-link:hover::after,
+.nav-link.active-link::after {
+  width: 100% !important;
+}
+
+.nav-link.active-link {
+  color: var(--gold) !important;
+}
+
+/* Custom range input styling */
+input[type="range"].accent-gold {
+  -webkit-appearance: none;
+  width: 100%;
+  background: transparent;
+}
+
+input[type="range"].accent-gold:focus {
+  outline: none;
+}
+
+/* Track styles */
+input[type="range"].accent-gold::-webkit-slider-runnable-track {
+  width: 100%;
+  height: 5px;
+  cursor: pointer;
+  background: var(--gold-deep);
+  border-radius: 2px;
+  transition: background 0.3s ease;
+}
+
+input[type="range"].accent-gold::-moz-range-track {
+  width: 100%;
+  height: 5px;
+  cursor: pointer;
+  background: var(--gold-deep);
+  border-radius: 2px;
+  transition: background 0.3s ease;
+}
+
+/* Thumb styles */
+input[type="range"].accent-gold::-webkit-slider-thumb {
+  height: 20px;
+  width: 20px;
+  border-radius: 50%;
+  background: var(--gold);
+  border: 1.5px solid var(--gold-l);
+  cursor: pointer;
+  -webkit-appearance: none;
+  margin-top: -8px;
+  box-shadow: 0 0 12px rgba(217, 184, 92, 0.5);
+  transition: transform 0.2s ease, background-color 0.2s ease;
+}
+
+input[type="range"].accent-gold::-webkit-slider-thumb:hover {
+  transform: scale(1.2);
+  background: var(--gold-l);
+}
+
+input[type="range"].accent-gold::-moz-range-thumb {
+  height: 20px;
+  width: 20px;
+  border: 1.5px solid var(--gold-l);
+  border-radius: 50%;
+  background: var(--gold);
+  cursor: pointer;
+  box-shadow: 0 0 12px rgba(217, 184, 92, 0.5);
+  transition: transform 0.2s ease, background-color 0.2s ease;
+}
+
+input[type="range"].accent-gold::-moz-range-thumb:hover {
+  transform: scale(1.2);
+  background: var(--gold-l);
 }
 

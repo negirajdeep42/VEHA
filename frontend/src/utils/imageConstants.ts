@@ -27,6 +27,7 @@ export const IMAGES = {
     earrings: '/images/earrings/earrings_cover.jpeg',
     necklaces: '/images/necklaces/necklaces_cover.jpeg',
     bracelets: '/images/bracelets/bracelets_cover.jpeg',
+    bangles: '/images/collections/collection_cover.jpeg',
   }
 };
 

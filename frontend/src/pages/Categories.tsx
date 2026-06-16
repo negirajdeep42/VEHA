@@ -8,6 +8,7 @@ export const Categories: React.FC = () => {
     { name: 'Earrings', slug: 'earrings', img: IMAGES.categories.earrings, desc: 'Classic studs, fine hoops, and dramatic drops.' },
     { name: 'Necklaces', slug: 'necklaces', img: IMAGES.categories.necklaces, desc: 'Delicate chains, minimal pendants, and layered links.' },
     { name: 'Bracelets', slug: 'bracelets', img: IMAGES.categories.bracelets, desc: 'Tennis cuffs, wave cuffs, and delicate chains.' },
+    { name: 'Bangles', slug: 'bangles', img: IMAGES.categories.bangles, desc: 'Traditional solid gold kadas and gem-studded bangles.' },
   ];
 
   return (

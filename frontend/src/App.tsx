@@ -1,6 +1,6 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import Header from './components/Header';
+import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import TopProgressBar from './components/TopProgressBar';
 import Home from './pages/Home';
@@ -26,7 +26,7 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   return (
     <div className="min-h-screen flex flex-col justify-between bg-noir text-cream">
       <TopProgressBar />
-      <Header />
+      <Navbar />
       <main className="flex-grow">
         {children}
       </main>
@@ -55,6 +55,7 @@ export const App: React.FC = () => {
           <Route path="/orders/:id" element={<OrderDetails />} />
           <Route path="/wishlist" element={<Wishlist />} />
           <Route path="/categories" element={<Categories />} />
+          <Route path="/collections" element={<Categories />} />
           <Route path="/search" element={<SearchResults />} />
           <Route path="/track-order" element={<TrackOrder />} />
           <Route path="/contact" element={<Contact />} />

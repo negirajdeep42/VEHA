@@ -1,6 +1,7 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import { Product, Category } from '../../types';
 import { VehaApi } from '../../utils/api';
+import { mockProducts } from '../../utils/mockProducts';
 
 interface ProductState {
   items: Product[];
@@ -22,7 +23,7 @@ interface ProductState {
 }
 
 const initialState: ProductState = {
-  items: [],
+  items: mockProducts,
   categories: [],
   selectedProduct: null,
   activeCategory: '',
@@ -36,7 +37,7 @@ const initialState: ProductState = {
   error: null,
   page: 0,
   totalPages: 1,
-  totalElements: 0,
+  totalElements: mockProducts.length,
 };
 
 export const fetchProducts = createAsyncThunk(
@@ -59,22 +60,30 @@ export const fetchProducts = createAsyncThunk(
       // If backend returns a paginated structure (e.g. content, totalPages), resolve it.
       // Else default to list format.
       if (data && data.content) {
+        const items = data.content.length > 0 ? data.content : mockProducts;
         return {
-          items: data.content,
+          items,
           page: data.number,
-          totalPages: data.totalPages,
-          totalElements: data.totalElements,
+          totalPages: data.content.length > 0 ? data.totalPages : 1,
+          totalElements: data.content.length > 0 ? data.totalElements : mockProducts.length,
         };
       } else {
+        const items = Array.isArray(data) && data.length > 0 ? data : mockProducts;
         return {
-          items: Array.isArray(data) ? data : [],
+          items,
           page: 0,
           totalPages: 1,
-          totalElements: Array.isArray(data) ? data.length : 0,
+          totalElements: items.length,
         };
       }
     } catch (err: any) {
-      return rejectWithValue(err.message || 'Failed to fetch products');
+      console.warn("Backend API failed. Falling back to local mock catalog.", err);
+      return {
+        items: mockProducts,
+        page: 0,
+        totalPages: 1,
+        totalElements: mockProducts.length,
+      };
     }
   }
 );
@@ -84,9 +93,24 @@ export const fetchCategories = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       const data = await VehaApi.getCategories();
-      return data;
+      if (Array.isArray(data) && data.length > 0) {
+        return data;
+      }
+      return [
+        { id: 1, name: 'Rings', slug: 'rings', icon: '' },
+        { id: 2, name: 'Earrings', slug: 'earrings', icon: '' },
+        { id: 3, name: 'Necklaces', slug: 'necklaces', icon: '' },
+        { id: 4, name: 'Bracelets', slug: 'bracelets', icon: '' },
+        { id: 5, name: 'Bangles', slug: 'bangles', icon: '' },
+      ];
     } catch (err: any) {
-      return rejectWithValue(err.message || 'Failed to fetch categories');
+      return [
+        { id: 1, name: 'Rings', slug: 'rings', icon: '' },
+        { id: 2, name: 'Earrings', slug: 'earrings', icon: '' },
+        { id: 3, name: 'Necklaces', slug: 'necklaces', icon: '' },
+        { id: 4, name: 'Bracelets', slug: 'bracelets', icon: '' },
+        { id: 5, name: 'Bangles', slug: 'bangles', icon: '' },
+      ];
     }
   }
 );
@@ -98,6 +122,10 @@ export const fetchProductDetails = createAsyncThunk(
       const data = await VehaApi.getProductById(id);
       return data;
     } catch (err: any) {
+      const fallback = mockProducts.find(p => p.id === id);
+      if (fallback) {
+        return fallback;
+      }
       return rejectWithValue(err.message || 'Failed to fetch product details');
     }
   }
@@ -110,6 +138,10 @@ export const fetchProductDetailsBySlug = createAsyncThunk(
       const data = await VehaApi.getProductBySlug(slug);
       return data;
     } catch (err: any) {
+      const fallback = mockProducts.find(p => p.slug === slug);
+      if (fallback) {
+        return fallback;
+      }
       return rejectWithValue(err.message || 'Failed to fetch product details');
     }
   }

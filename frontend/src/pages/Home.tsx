@@ -39,7 +39,7 @@ export const Home: React.FC = () => {
           <img 
             src={IMAGES.hero.main} 
             alt="Veha Jewelry Showcase" 
-            className="w-full h-full object-cover opacity-25 filter brightness-75 scale-105"
+            className="w-full h-full object-cover opacity-[0.45] filter brightness-75 scale-105"
             loading="eager"
           />
         </div>
@@ -60,8 +60,8 @@ export const Home: React.FC = () => {
             BIS-hallmarked gold and 925 sterling silver, finished by hand and kept brilliant for life.
           </p>
           <div className="hero-cta flex justify-center gap-4">
-            <Link to="/shop" className="btn solid">Shop the collection</Link>
-            <a href="#edit" className="btn line">The Veha story</a>
+            <Link to="/shop" className="btn solid">SHOP THE COLLECTION</Link>
+            <a href="#edit" className="btn line">THE VEHA STORY</a>
           </div>
         </div>
       </section>
